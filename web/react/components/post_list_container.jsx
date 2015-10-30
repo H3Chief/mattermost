@@ -8,6 +8,7 @@ const ChannelStore = require('../stores/channel_store.jsx');
 const PreferenceStore = require('../stores/preference_store.jsx');
 
 const Constants = require('../utils/constants.jsx');
+const TutorialSteps = Constants.TutorialSteps;
 const Preferences = Constants.Preferences;
 
 export default class PostListContainer extends React.Component {
@@ -26,8 +27,8 @@ export default class PostListContainer extends React.Component {
             state = {currentChannelId: null, postLists: []};
         }
 
-        const isTutorialComplete = PreferenceStore.getPreference(Preferences.TUTORIAL_INTRO_COMPLETE, UserStore.getCurrentId(), 'false');
-        state.isTutorialComplete = isTutorialComplete.value === 'true';
+        const tutorialPref = PreferenceStore.getPreference(Preferences.TUTORIAL_STEP, UserStore.getCurrentId(), {value: '0'});
+        state.showTutorialScreens = parseInt(tutorialPref.value, 10) === TutorialSteps.INTRO_SCREENS;
 
         this.state = state;
     }
@@ -61,8 +62,8 @@ export default class PostListContainer extends React.Component {
         }
     }
     onPreferenceChange() {
-        const isTutorialComplete = PreferenceStore.getPreference(Preferences.TUTORIAL_INTRO_COMPLETE, UserStore.getCurrentId(), 'false');
-        this.setState({isTutorialComplete: isTutorialComplete.value === 'true'});
+        const tutorialPref = PreferenceStore.getPreference(Preferences.TUTORIAL_STEP, UserStore.getCurrentId(), {value: '0'});
+        this.setState({showTutorialScreens: parseInt(tutorialPref.value, 10) <= TutorialSteps.INTRO_SCREENS});
     }
     render() {
         const postLists = this.state.postLists;
@@ -71,7 +72,9 @@ export default class PostListContainer extends React.Component {
         const postListCtls = [];
         let tutorialIntro = null;
 
-        if (this.state.isTutorialComplete) {
+        if (this.state.showTutorialScreens) {
+            tutorialIntro = <TutorialIntroScreens/>;
+        } else {
             for (let i = 0; i <= this.state.postLists.length - 1; i++) {
                 postListCtls.push(
                     <PostList
@@ -81,8 +84,6 @@ export default class PostListContainer extends React.Component {
                     />
                 );
             }
-        } else {
-            tutorialIntro = <TutorialIntroScreens/>;
         }
 
         return (

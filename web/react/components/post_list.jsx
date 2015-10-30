@@ -264,13 +264,15 @@ export default class PostList extends React.Component {
     }
     scrollToBottom(force) {
         this.isUserScroll = false;
-        var postHolder = $(ReactDOM.findDOMNode(this.refs.postlist));
         if ($('#new_message_' + this.props.channelId)[0] && !this.userHasSeenNew && !force) {
             $('#new_message_' + this.props.channelId)[0].scrollIntoView();
         } else {
-            postHolder.addClass('hide-scroll');
-            postHolder[0].scrollTop = postHolder[0].scrollHeight;
-            postHolder.removeClass('hide-scroll');
+            const postHolder = $(ReactDOM.findDOMNode(this.refs.postlist));
+            if (postHolder.length !== 0) {
+                postHolder.addClass('hide-scroll');
+                postHolder[0].scrollTop = postHolder[0].scrollHeight;
+                postHolder.removeClass('hide-scroll');
+            }
         }
     }
     loadFirstPosts(id) {
