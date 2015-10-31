@@ -33,13 +33,11 @@ Vagrant.configure(2) do |config|
 	vb.name = "mattermost"
   end
 
-  config.vm.provision "shell", path: "provision/init.sh"
 
   config.vm.provision "puppet" do |puppet|
-	puppet.manifests_path = ["vm", "/home/vagrant/mattermost/provision/manifests"]
+	puppet.manifests_path = "provision/manifests"
 	puppet.manifest_file = "init.pp"
-    puppet.temp_dir = "/tmp"
-	puppet.options = ['--modulepath=/tmp/modules']
+    puppet.modules_path = "provision/modules"
   end
   
 end
