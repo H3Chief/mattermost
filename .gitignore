@@ -56,3 +56,6 @@ api/data/*
 .agignore
 .ctags
 tags
+
+# vagrant setup files
+/.vagrant
